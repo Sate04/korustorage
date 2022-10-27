@@ -6,7 +6,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 # Use a service account.
-cred = credentials.Certificate('./korustorage-6ae74-firebase-adminsdk-mvkus-c33ba7e73d.json')
+cred = credentials.Certificate('./app/korustorage-6ae74-firebase-adminsdk-mvkus-cdd6b66ece.json')
 
 app = firebase_admin.initialize_app(cred)
 
@@ -55,4 +55,4 @@ def subtract(collection, item, num):
 #GPIO.cleanup() # Clean up
 
 
-subtract('buttons','teal',5)
+#subtract('buttons','teal',5)

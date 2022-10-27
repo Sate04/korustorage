@@ -13,8 +13,8 @@ const firebaseConfig = {
   projectId: "korustorage-6ae74",
   storageBucket: "korustorage-6ae74.appspot.com",
   messagingSenderId: "949934571747",
-  appId: "1:949934571747:web:dea5a16ede3c07bbe345d6",
-  measurementId: "G-5HNG6H0FS3"
+  appId: "1:949934571747:web:54fceeb6474741f5e345d6",
+  measurementId: "G-65JZM9L42Z"
 };
 
 // Initialize Firebase
