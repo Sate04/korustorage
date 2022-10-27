@@ -1,0 +1,58 @@
+import firebase_admin
+#import RPi.GPIO as GPIO
+
+
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Use a service account.
+cred = credentials.Certificate('./korustorage-6ae74-firebase-adminsdk-mvkus-c33ba7e73d.json')
+
+app = firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+for doc in db.collection(u'buttons').stream():
+	print(doc.to_dict())
+
+
+def add(collection, item, num):
+
+	if(num <= 0):
+		print('Cannot add a number less than or equal to 0.')
+		return
+	
+	current = db.collection(collection).document(item).get().to_dict()['amount']
+
+	db.collection(collection).document(item).set({'amount': current + num}) 
+
+	print('Added one {color} button. The current number of {color} buttons is now {newnum}'.format(color=item,newnum=db.collection(collection).document(item).get().to_dict()['amount']))
+
+
+def subtract(collection, item, num):
+
+	if(num <= 0):
+		print('Cannot subtract a number less than or equal to 0.')
+		return
+	
+	current = db.collection(collection).document(item).get().to_dict()['amount']
+
+	db.collection(collection).document(item).set({'amount': current - num}) 
+
+	print('Added one {color} button. The current number of {color} buttons is now {newnum}'.format(color=item,newnum=db.collection(collection).document(item).get().to_dict()['amount']))
+    
+
+#GPIO.setwarnings(False) # Ignore warning for now
+#GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+#GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Set pin 10 to be an input pin and set initial value to be pulled low (off)
+#GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Set pin 10 to be an input pin and set initial value to be pulled low (off)
+#
+#
+#GPIO.add_event_detect(10,GPIO.RISING,callback=addone()) # Setup event on pin 10 rising edge
+#
+#message = input("Press enter to quit\n\n") # Run until someone presses enter
+#
+#GPIO.cleanup() # Clean up
+
+
+subtract('buttons','teal',5)
