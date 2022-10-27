@@ -2,7 +2,7 @@
 
 
 import { initializeApp } from "firebase/app"
-import { collection, doc, getFirestore } from "firebase/firestore";
+import { collection, getDocs, doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -25,23 +25,55 @@ let app = initializeApp(firebaseConfig);
 let db = getFirestore(app)
 
 
-db.collection("buttons").get().then((querySnapshot) => {
+const buttons = [];
+
+
+const q = collection(db, "buttons");
+const unsubscribe = onSnapshot(q, (querySnapshot) => {
+
+    let buttonNames = [];
+
+    buttons.forEach(button => {
+        buttonNames.push(button[0])
+    })
+
     querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
+        if(!buttonNames.includes(doc.id)){
+            buttons.push([doc.id, doc.data()['amount']]);
+        }
+
+        else {
+
+            buttons[buttonNames.indexOf(doc.id)][1] = doc.data()['amount']
+
+        }
     });
-});
+    buttons = buttons
+}); 
+
+function add(name){
+    let buttonDoc = doc(db, "buttons", name)
+    console.log(buttonDoc.id)
+}   
+
+add('teal')
 
 </script>
 
 <div class="w-screen h-screen flex justify-evenly">
+{#each buttons as button}
+<div>
+    <h1>
+        {button[0]} {button[1]}
+    </h1>
+    <button on:click={add(button[0])}>
+    	Add
+    </button>
+    <button>
+        Subtract
+    </button>
+</div>
+{/each}
 
-<button>
-	Add
-</button>
-
-<button>
-	Subtract
-</button>
 
 </div>
