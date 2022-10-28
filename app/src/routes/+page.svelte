@@ -2,7 +2,8 @@
 
 
 import { initializeApp } from "firebase/app"
-import { collection, getDocs, doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, getFirestore, setDoc, onSnapshot } from "firebase/firestore";
+import { Button } from 'svelte-materialify'
 
 
 // TODO: Replace the following with your app's Firebase project configuration
@@ -51,27 +52,41 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
     buttons = buttons
 }); 
 
-function add(name){
-    let buttonDoc = doc(db, "buttons", name)
-    console.log(buttonDoc.id)
+async function add(name){
+    let buttonDoc = await getDoc(doc(db, "buttons", name))
+
+
+    await setDoc(doc(db, "buttons", name), {
+        amount: buttonDoc.data()['amount'] + 1
+    })
+
 }   
 
-add('teal')
+async function subtract(name){
+    let buttonDoc = await getDoc(doc(db, "buttons", name))
+
+
+    await setDoc(doc(db, "buttons", name), {
+        amount: buttonDoc.data()['amount'] - 1 
+    })
+
+}   
+
 
 </script>
 
 <div class="w-screen h-screen flex justify-evenly">
 {#each buttons as button}
 <div>
-    <h1>
+    <p class='text-center'>
         {button[0]} {button[1]}
-    </h1>
-    <button on:click={add(button[0])}>
+    </p>
+    <Button on:click={add(button[0])}>
     	Add
-    </button>
-    <button>
+    </Button>
+    <Button on:click={subtract(button[0])}>
         Subtract
-    </button>
+    </Button>
 </div>
 {/each}
 
